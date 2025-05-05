@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>reconocimiento</title>
+  </head>
+
+  <style>
+    body {
+      background-color: antiquewhite;
+    }
+  </style>
+  <body>
+    <div id="label"></div>
+    <div id="confidencia"></div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+
+    <script>
+      let classifier = null;
+      let img;
+      let label;
+      let confidencia;
+
+      //funcion de ml5
+      function preload() {
+        classifier = ml5.imageClassifier("MobileNet");
+        img = loadImage("images/dragon.jpeg");
+        label = document.querySelector("#label");
+        confidencia = document.querySelector("#confidencia");
+      }
+
+      function setup() {
+        createCanvas(400, 400);
+        classifier.classify(img, gotResult);
+        image(img, 0, 0, width, height);
+      }
+
+      function gotResult(results) {
+        console.log(results);
+        label.innerHTML = results[0].label;
+
+        const confianza = nf(results[0].confidence, 0, 2)
+        confidencia.innerHTML = confianza;
+      }
+
+      gotResult();
+
+    </script>
+  </body>
+</html>

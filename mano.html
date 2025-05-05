@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dibujo</title>
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+
+    <script>
+      let handPose;
+      let video;
+      let hands = [];
+      let connections = null;
+
+      function preload() {
+        handPose = ml5.handPose();
+      }
+
+      function setup() {
+        createCanvas(800, 800);
+        video = createCapture(VIDEO);
+        video.size(800, 800);
+        video.hide();
+        handPose.detectStart(video, gotHands);
+        connections = handPose.getConnections();
+        console.log(connections)
+      }
+
+      function gotHands(results) {
+        hands = results;
+      }
+
+      function draw() {
+        image(video, 0, 0, width, height);
+        for (let i = 0; i < hands.length; i++) {
+          let hand = hands[i];
+          for (let j = 0; j < hand.keypoints.length; j++) {
+            let keypoint = hand.keypoints[j];
+            fill(0, 255, 0);
+            noStroke();
+            circle(keypoint.x, keypoint.y, 10);
+            //console.log(`posicion del punto[${keypoint.x}][${keypoint.y}]`);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
