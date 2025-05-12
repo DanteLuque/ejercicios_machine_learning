@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ejercicio</title>
+
+  <style>
+    .image {
+      height: 200px;
+      width: auto;
+      object-fit: cover;
+      display: block;
+    }
+
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <ul style="display: flex; list-style: none; gap: 10px;">
+    <li><img class="image" src="../images/bird.jpeg" alt="pajaro"></li>
+    <li><img class="image" src="../images/oso.jpeg" alt="oso"></li>
+    <li><img class="image" src="../images/tigre.jpeg" alt="tigre"></li>
+  </ul>
+  <div id="label"></div>
+  <div id="confidencia"></div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+
+  <script>
+    let classifier = null;
+    let imgen;
+    let label;
+    let confidencia;
+
+    function preload() {
+      classifier = ml5.imageClassifier("MobileNet");
+    }
+
+    function setup() {
+      canvas = createCanvas(400, 400);
+      canvas.parent(document.body);
+      background(240);
+
+      label = document.querySelector("#label");
+      confidencia = document.querySelector("#confidencia");
+
+      document.querySelectorAll(".image").forEach(img => {
+        img.addEventListener("click", () => {
+          const imagePath = img.src;
+          loadImage(imagePath, loadedImg => {
+            image(loadedImg, 0, 0, width, height);
+            classifier.classify(loadedImg, gotResult);
+          });
+        });
+      });
+    }
+
+    function gotResult(results) {
+      console.log(results);
+      label.innerHTML = results[0].label;
+
+      const confianza = nf(results[0].confidence, 0, 2)
+      confidencia.innerHTML = confianza;
+    }
+  </script>
+</body>
+
+</html>

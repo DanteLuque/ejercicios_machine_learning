@@ -25,10 +25,9 @@
       let label;
       let confidencia;
 
-      //funcion de ml5
       function preload() {
         classifier = ml5.imageClassifier("MobileNet");
-        img = loadImage("images/dragon.jpeg");
+        img = loadImage("images/bird.jpeg");
         label = document.querySelector("#label");
         confidencia = document.querySelector("#confidencia");
       }
@@ -46,9 +45,6 @@
         const confianza = nf(results[0].confidence, 0, 2)
         confidencia.innerHTML = confianza;
       }
-
-      gotResult();
-
     </script>
   </body>
 </html>

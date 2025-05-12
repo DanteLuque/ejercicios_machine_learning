@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mano circulo</title>
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+
+    <script>
+        let handPose;
+        let video;
+        let hands = [];
+        let connections = null;
+        let Img;
+
+        function preload() {
+            handPose = ml5.handPose();
+            Img = loadImage("../images/anime.gif");
+        }
+
+        function setup() {
+            createCanvas(800, 800);
+            video = createCapture(VIDEO);
+            video.size(800, 800);
+            video.hide();
+            handPose.detectStart(video, gotHands);
+            connections = handPose.getConnections();
+            console.log(connections);
+        }
+
+        function gotHands(results) {
+            hands = results;
+        }
+
+        function draw() {
+            image(video, 0, 0, width, height);
+            if (hands.length > 0) {
+                let finger = hands[0].index_finger_tip;
+                let thumb = hands[0].thumb_tip;
+
+                let pinch = dist(finger.x, finger.y, thumb.x, thumb.y);
+
+                let centerX = (finger.x + thumb.x) / 2;
+                let centerY = (finger.y + thumb.y) / 2;
+
+                let size = pinch * 2;
+                image(Img, centerX - size / 2, centerY - size / 2, size, size);
+            }
+        }
+    </script>
+</body>
+
+</html>
