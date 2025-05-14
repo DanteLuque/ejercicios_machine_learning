@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sintetizador 2</title>
+  </head>
+  <body>
+
+    <form action="">
+      <div>
+        <label for="voces">Voces</label>
+        <select name="voces" id="voces"></select>
+      </div>
+      <div>
+        <label for="tono">Tono: </label>
+        <input type="range" min="0" max="2" step="0.25" value="1" name="tono" id="tono">
+      </div>
+
+      <div>
+        <label for="velocidad">Velocidad: </label>
+        <input type="range" min="0" max="2" step="0.25" value="1" name="velocidad" id="velocidad">
+      </div>
+
+      <div>
+        <label for="volumen">Volumen: </label>
+        <input type="range" min="0" max="1" step="0.1" value="1" name="volumen" id="volumen">
+      </div>
+
+      <textarea name="texto" id="texto" rows="5" cols="30">Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto debitis ab inventore quibusdam, corporis expedita illum magnam dolorum aliquam hic fugit unde eius. Assumenda mollitia architecto similique, sequi recusandae fugit?</textarea>
+
+      <div>
+    <button type="button" id="hablar">habla</button>
+    <button type="button" id="detener">Detener</button>
+      </div>
+    </form>
+
+
+    <!--Sintetizador = capacidad para emitir sonido/palabras-->
+    <script>
+      const vocesList = document.querySelector("#voces");
+      const tono = document.querySelector('#tono');
+      const velocidad = document.querySelector("#velocidad");
+      const volumen = document.querySelector("#volumen");
+      const texto = document.querySelector("#texto");
+
+      const btnHablar = document.querySelector("#hablar");
+      const btnDetener = document.querySelector("#detener");
+
+
+      //obtener la lista de voces
+      speechSynthesis.addEventListener("voiceschanged", ()=>{
+        const voices = speechSynthesis.getVoices();
+        // console.log(voices);
+
+        const options = voices.map((voice, index)=>{
+          return `<option value='${index}'>${voice.name}</option>`
+        });
+        
+        vocesList.innerHTML = options.join("");
+      })
+
+      const speak = () => {
+        const message = new SpeechSynthesisUtterance(texto.value);
+
+        //configuracion de la declaracion de voz
+        message.voice = speechSynthesis.getVoices()[vocesList.value];
+        message.pitch = tono.value;
+        message.rate = velocidad.value;
+        message.volume = volumen.value;
+        speechSynthesis.speak(message);
+      };
+
+      const mute = () => {
+        if (speechSynthesis.paused) {
+          speechSynthesis.resume();
+          btnPausar.textContent = "pausar";
+        } else {
+          speechSynthesis.pause();
+          btnPausar.textContent = "continuar";
+        }
+      };
+
+      const stopSpeak = () => {
+        speechSynthesis.cancel();
+      };
+
+      btnHablar.addEventListener("click", speak);
+      btnDetener.addEventListener("click", stopSpeak);
+    </script>
+  </body>
+</html>

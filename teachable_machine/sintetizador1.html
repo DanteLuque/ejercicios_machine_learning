@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sintetizador 1</title>
+  </head>
+  <body>
+    <button type="button" id="hablar">habla</button>
+    <button type="button" id="pausar">Pausar</button>
+    <button type="button" id="detener">Detener</button>
+    <!--Sintetizador = capacidad para emitir sonido/palabras-->
+    <script>
+      const btnHablar = document.querySelector("#hablar");
+      const btnPausar = document.querySelector("#pausar");
+      const btnDetener = document.querySelector("#detener");
+
+      const speak = () => {
+        const textExample =
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto debitis ab inventore quibusdam, corporis expedita illum magnam dolorum aliquam hic fugit unde eius. Assumenda mollitia architecto similique, sequi recusandae fugit?";
+        const message = new SpeechSynthesisUtterance(textExample);
+        speechSynthesis.speak(message);
+      };
+
+      const mute = () => {
+        if (speechSynthesis.paused) {
+          speechSynthesis.resume();
+          btnPausar.textContent = "pausar";
+        } else {
+          speechSynthesis.pause();
+          btnPausar.textContent = "continuar";
+        }
+      };
+
+      const stopSpeak = () => {
+        speechSynthesis.cancel();
+      };
+
+      btnHablar.addEventListener("click", speak);
+      btnPausar.addEventListener("click", mute);
+      btnDetener.addEventListener("click", stopSpeak);
+    </script>
+  </body>
+</html>
