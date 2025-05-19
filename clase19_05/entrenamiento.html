@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entrenamiento</title>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
+    <script>
+      let circles = [];
+      let squares = [];
+      let triangles = [];
+
+      let shapeClassifier;
+
+      function preload() {
+        for (let i = 0; i < 100; i++) {
+          // (valor, Ndigitos, Ndecimales) => 1,3,0 => 001; 7,4,2 => 0007,00; 23,4,0 => 0023
+          let index = nf(i + 1, 3, 0);
+          circles[i] = loadImage(
+            `../processing/ejercicio3/data/circles/circle${index}.png`
+          );
+          squares[i] = loadImage(
+            `../processing/ejercicio3/data/squares/square${index}.png`
+          );
+          triangles[i] = loadImage(
+            `../processing/ejercicio3/data/triangles/triangle${index}.png`
+          );
+        }
+      }
+
+      function setup() {
+        createCanvas(400, 400);
+
+        let options = {
+          inputs: [48, 48, 4],
+          task: "imageClassification",
+          debug: true,
+        };
+        // red neuronal
+        shapeClassifier = ml5.neuralNetwork(options);
+
+        // APRENDIZAJE SUPERVISADO
+        for (let i = 0; i < 100; i++) { 
+          shapeClassifier.addData({ image: circles[i] }, { label: "circulo" });
+          shapeClassifier.addData({ image: squares[i] }, { label: "cuadrado" });
+          shapeClassifier.addData({ image: triangles[i] }, { label: "triangulo" }
+          );
+        }
+
+        //Normalización (revisión)
+        shapeClassifier.normalizeData();
+
+        //Inicia el entrenamiento
+        shapeClassifier.train({ epochs: 50 }, finishedTraining);
+      }
+
+      function finishedTraining() {
+        console.log("toy entrenando");
+        shapeClassifier.save();
+      }
+    </script>
+  </body>
+</html>

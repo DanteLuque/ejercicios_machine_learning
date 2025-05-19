@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body{
+        background-color: antiquewhite;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js"></script>
+
+    <script>
+      let shapeClassifier;
+      let canvas;
+      let resultDiv;
+      let inputImage;
+      let clearButton;
+
+      function setup() {
+        canvas = createCanvas(400,400);
+        background(255);
+
+        let options = {
+          inputs: [48, 48, 4],
+          task: "imageClassification",
+        };
+        // red neuronal
+        shapeClassifier = ml5.neuralNetwork(options);
+
+        const modelDetails = {
+          model: 'model/model.json',
+          metadata: 'model/model_meta.json',
+          weights: 'model/model.weights.bin'
+        }
+        
+        clearButton = createButton('Limpiar');
+        clearButton.mousePressed(()=>{
+          background(255)
+        });
+
+        resultDiv = createDiv('Cargando modelo...');
+        inputImage = createGraphics(48,48);
+
+        shapeClassifier.load(modelDetails, modelLoaded);
+      }
+      
+        function modelLoaded(){
+          console.log("Modelo cargado");
+          classifyImage();
+        }
+
+        function classifyImage(){
+          inputImage.copy(canvas, 0,0, //Esquina superior izq
+                                  400,400,
+                                  0,0, // Esquina inferior der
+                                  64,64);
+          shapeClassifier.classify({image: inputImage}, goResults);
+        }
+
+        function goResults(err, result){
+          if(err){
+            console.log(err)
+            return;
+          }
+
+          let etiqueta = result[0].label;
+          let confianza = result[0].confidence;
+          resultDiv.html(etiqueta+" => "+confianza);
+          classifyImage();
+        }
+
+        function draw(){
+          //mousePressed = boton primario del mouse
+          if(mouseIsPressed){
+            strokeWeight(8);
+            line(mouseX, mouseY, pmouseX, pmouseY);
+
+          }
+        }
+    </script>
+  </body>
+</html>

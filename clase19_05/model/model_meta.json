@@ -1,0 +1,1 @@
+{"inputUnits":[48,48,4],"outputUnits":3,"inputs":{"image":{"dtype":"array","min":100,"max":255}},"outputs":{"label":{"dtype":"string","min":0,"max":1,"uniqueValues":["circulo","cuadrado","triangulo"],"legend":{"circulo":[1,0,0],"cuadrado":[0,1,0],"triangulo":[0,0,1]}}},"isNormalized":true}

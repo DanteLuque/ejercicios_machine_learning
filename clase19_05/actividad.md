@@ -1,0 +1,1 @@
+### TAREA FINAL (ENTREGABLE): UN MODELO QUE IDENTIFIQUE EL TIPO DE TRIANGULOS (que hable y asi)  el profe quiere que sea bonito
